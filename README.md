@@ -7,3 +7,5 @@ So the shapes of mean and variance should be `(batch_size, n_channel)`.
 
 The original paper is found [here](http://arxiv.org/abs/1607.08022).
 And my working history is found [here](https://github.com/crcrpar/chainer/tree/instance_norm).
+
+I'm looking forward to your review and/or correction.
