@@ -49,7 +49,7 @@ class InstanceNormalization(link.Link):
         if hasattr(self, 'gamma'):
             gamma = self.gamma
         elif gamma_ is not None:
-            gamma = gamma
+            gamma = gamma_
         else:
             with cuda.get_device_from_id(self._device_id):
                 gamma = variable.Variable(self.xp.ones(
