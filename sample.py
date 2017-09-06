@@ -24,7 +24,7 @@ class ShallowConv(chainer.Chain):
             self.c_1 = L.Convolution2D(1, 3, 7, 2, 3)
             self.i_1 = InstanceNormalization(3)
             self.c_2 = L.Convolution2D(3, 6, 7, 4, 4)
-            self.i_2 = InstanceNormalization(7)
+            self.i_2 = InstanceNormalization(6)
             self.l_1 = L.Linear(None, 10)
 
     def __call__(self, x):
