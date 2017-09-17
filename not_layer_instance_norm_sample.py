@@ -60,7 +60,7 @@ class ShallowConv(chainer.Chain):
             return x_hat
 
 
-def main(gpu_id=-1, bs=32, epoch=10, out='./not_layer_result', resume=''):
+def main(gpu_id=-1, bs=32, epoch=20, out='./not_layer_result', resume=''):
     net = ShallowConv()
     model = L.Classifier(net)
     if gpu_id >= 0:
@@ -76,6 +76,7 @@ def main(gpu_id=-1, bs=32, epoch=10, out='./not_layer_result', resume=''):
 
     updater = training.StandardUpdater(train_iter, optimizer, device=gpu_id)
     trainer = training.Trainer(updater, (epoch, 'epoch'), out=out)
+    trainer.extend(extensions.ParameterStatistics(model.predictor))
     trainer.extend(extensions.Evaluator(test_iter, model, device=gpu_id))
     trainer.extend(extensions.LogReport())
     trainer.extend(extensions.PrintReport(
