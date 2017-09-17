@@ -13,7 +13,7 @@ from instance_normalization import InstanceNormalization
 class ShallowConv(chainer.Chain):
 
     """Shallow Conv
-    
+
     This is a shallow convolutional network to check whether
     InstanceNormalization work or not.
     """
@@ -35,7 +35,7 @@ class ShallowConv(chainer.Chain):
         return self.l_1(h)
 
 
-def main(gpu_id=-1, bs=32, epoch=10, out='./result', resume=''):
+def main(gpu_id=-1, bs=32, epoch=20, out='./result', resume=''):
     net = ShallowConv()
     model = L.Classifier(net)
     if gpu_id >= 0:
@@ -46,12 +46,14 @@ def main(gpu_id=-1, bs=32, epoch=10, out='./result', resume=''):
 
     train, test = chainer.datasets.get_mnist(ndim=3)
     train_iter = chainer.iterators.SerialIterator(train, bs)
-    test_iter = chainer.iterators.SerialIterator(test, bs, repeat=False, shuffle=False)
+    test_iter = chainer.iterators.SerialIterator(
+        test, bs, repeat=False, shuffle=False)
 
     updater = training.StandardUpdater(train_iter, optimizer, device=gpu_id)
     trainer = training.Trainer(updater, (epoch, 'epoch'), out=out)
+    trainer.extend(extensions.ParameterStatistics(model.predictor))
     trainer.extend(extensions.Evaluator(test_iter, model, device=gpu_id))
-    trainer.extend(extensions.LogReport())
+    trainer.extend(extensions.LogReport(log_name='parameter_statistics'))
     trainer.extend(extensions.PrintReport(
         ['epoch', 'main/loss', 'validation/main/loss',
          'main/accuracy', 'validation/main/accuracy', 'elapsed_time']))
