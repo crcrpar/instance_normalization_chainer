@@ -11,7 +11,7 @@ I'm looking forward to your review and/or correction.
 
 # Comparison
 This is comparison of InstanceNormalization layer and combination of `chainer.functions` and `chainer.variable.Parameter`.
-![Comparison](https://raw.githubusercontent.com/crcrpar/instance_normalization_chainer/exp/not_layer/comparison.png)
+![Comparison](https://raw.githubusercontent.com/crcrpar/instance_normalization_chainer/master/comparison.png)
 
 As in `not_layer_instance_norm_sample.py`, the latter implementation might be more naive than the other.
 ```python
