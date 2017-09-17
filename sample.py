@@ -35,7 +35,7 @@ class ShallowConv(chainer.Chain):
         return self.l_1(h)
 
 
-def main(gpu_id=-1, bs=32, epoch=10, out='./result', resume=''):
+def main(gpu_id=-1, bs=32, epoch=20, out='./result', resume=''):
     net = ShallowConv()
     model = L.Classifier(net)
     if gpu_id >= 0:
@@ -51,8 +51,9 @@ def main(gpu_id=-1, bs=32, epoch=10, out='./result', resume=''):
 
     updater = training.StandardUpdater(train_iter, optimizer, device=gpu_id)
     trainer = training.Trainer(updater, (epoch, 'epoch'), out=out)
+    trainer.extend(extensions.ParameterStatistics(model.predictor))
     trainer.extend(extensions.Evaluator(test_iter, model, device=gpu_id))
-    trainer.extend(extensions.LogReport())
+    trainer.extend(extensions.LogReport(log_name='parameter_statistics'))
     trainer.extend(extensions.PrintReport(
         ['epoch', 'main/loss', 'validation/main/loss',
          'main/accuracy', 'validation/main/accuracy', 'elapsed_time']))
