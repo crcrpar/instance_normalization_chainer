@@ -13,7 +13,7 @@ from instance_normalization import InstanceNormalization
 class ShallowConv(chainer.Chain):
 
     """Shallow Conv
-    
+
     This is a shallow convolutional network to check whether
     InstanceNormalization work or not.
     """
@@ -46,7 +46,8 @@ def main(gpu_id=-1, bs=32, epoch=10, out='./result', resume=''):
 
     train, test = chainer.datasets.get_mnist(ndim=3)
     train_iter = chainer.iterators.SerialIterator(train, bs)
-    test_iter = chainer.iterators.SerialIterator(test, bs, repeat=False, shuffle=False)
+    test_iter = chainer.iterators.SerialIterator(
+        test, bs, repeat=False, shuffle=False)
 
     updater = training.StandardUpdater(train_iter, optimizer, device=gpu_id)
     trainer = training.Trainer(updater, (epoch, 'epoch'), out=out)
