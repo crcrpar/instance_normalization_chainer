@@ -11,6 +11,53 @@ from chainer import training
 from chainer.training import extensions
 
 
+class CIR(chainer.Chain):
+
+    """Conv-InstanceNorm-ReLU"""
+
+    def __init__(self, in_ch, out_ch, dropout=None, use_gamma=True,
+                 use_beta=False, nobias=False):
+        super(CIR, self).__init__()
+        with self.init_scope():
+            self.conv = L.Convolution2D(in_ch, out_ch, 3, 1, 1, nobias=nobias)
+            if use_gamma:
+                self.gamma = self._prepare_gamma(out_ch)
+            if use_beta:
+                self.beta = self._prepare_beta(out_ch)
+        self.dropout = dropout
+
+    def __call__(self, x):
+        h = self.norm(self.conv(x))
+        if self.dropout is not None:
+            h = F.dropout(h, self.dropout)
+        return F.relu(h)
+
+    def norm(self, x):
+        mean = F.mean(x, axis=-1)
+        mean = F.mean(x, axis=-1)
+        mean = F.broadcast_to(mean[Ellipsis, None, None], x.shape)
+        var = F.squared_difference(x, mean)
+        std = F.sqrt(var + 1e-5)
+        x_hat = (x - mean) / std
+        if hasattr(self, 'gamma'):
+            x_hat *= self.gamma
+        if hasattr(self, 'beta'):
+            x_hat += self.beta
+        return x_hat
+
+    def _prepare_beta(self, size, init=0, dtype=np.float32):
+        initial_beta = chainer.initializers._get_initializer(init)
+        initial_beta.dtype = dtype
+        beta = chainer.variable.Parameter(init, size)
+        return beta
+
+    def _prepare_gamma(self, size, init=1, dtype=np.float32):
+        initial_gamma = chainer.initializers._get_initializer(init)
+        initial_gamma.dtype = dtype
+        gamma = chainer.variable.Parameter(init, size)
+        return gamma
+
+
 def prepare_beta(size, init=0, dtype=np.float32):
     initial_beta = chainer.initializers._get_initializer(init)
     initial_beta.dtype = dtype
