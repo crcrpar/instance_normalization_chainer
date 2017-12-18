@@ -1,4 +1,6 @@
 # Instance Normalization
+2017/12/18: Added new version which is Instance Normalization on top of Batch Normalization. Might be faster if CUDA and cuDNN are available.
+
 This is a [Chainer v2](https://chainer.org) implementation of Instance Normalization.
 Note that this implementation will not work if your Chainer version is under 2.0.
 Instance normalization is regarded as more suitable for `style transfer` task than batch normalization.
