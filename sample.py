@@ -1,5 +1,5 @@
 import matplotlib
-matplotlib.use('Agg')
+matplotlib.use('Agg')  # NOQA
 
 import chainer
 import chainer.functions as F
